@@ -405,71 +405,66 @@ body {
   transform: scale(1.1);
 }
 
-/* 📱 모바일 최적화 (스마트폰 반응형) */
+/* 📱 모바일 전용 반응형 레이아웃 수정 */
 @media (max-width: 768px) {
 
-  /* 상단 헤더 및 주제(Topic) 입력란 간격 재조정 */
-  .header-container, #topic-container {
-    padding-top: 60px !important; /* 🔥 TOP 3 버튼이 들어갈 충분한 위쪽 여백 확보 */
+  /* 상단 헤더 컨테이너 정렬 */
+  .header-container {
+    display: flex !important;
+    flex-direction: column !important; /* 요소들을 세로로 정렬 */
+    align-items: center !important;
+    padding: 16px 12px 10px 12px !important;
+    gap: 10px !important;
+    position: relative !important;
+  }
+
+  /* 🔥 TOP 3 버튼을 우측 상단으로 이동 및 크기 축소 */
+  .top3-btn {
+    position: absolute !important;
+    top: 12px !important;
+    right: 12px !important;
+    padding: 4px 10px !important;
+    font-size: 0.8rem !important;
+    z-index: 10 !important;
+  }
+
+  /* 주제(Topic) 입력 영역 패딩 조정 및 오른쪽 여백 확보 */
+  #topic-container {
     width: 100% !important;
-    box-sizing: border-box;
+    padding-right: 90px !important; /* 우측 TOP 3 버튼 영역과 안 겹치게 여백 지정 */
+    box-sizing: border-box !important;
+    margin-top: 5px !important;
   }
 
   #topic-input {
-    width: calc(100% - 32px) !important; /* 화면을 넘치지 않도록 너비 자동 계산 */
+    width: 100% !important;
     font-size: 1.1rem !important;
+    text-align: left !important;
   }
 
-  /* 🔥 TOP 3 버튼 모바일 위치 및 크기 최적화 */
-  .top3-btn {
-    top: 12px !important;
-    right: 16px !important;
-    padding: 6px 12px !important;
-    font-size: 0.85rem !important;
-    z-index: 20 !important; /* 주제 입력란보다 위쪽에 뜨도록 레이어 설정 */
-  }
-
-  /* TOP 3 모달 팝업 모바일 크기 최적화 */
-  .top3-modal {
-    width: 90% !important;
-    max-width: none !important;
-    padding: 20px 16px !important;
-  }
-
-  .top3-item {
-    padding: 12px 14px !important;
-  }
-
-  .top3-text {
-    font-size: 0.9rem !important;
-  }
-
-  /* 하단 입력 패널 및 보드 레이아웃 유지 */
+  /* 하단 입력창 모바일 너비 최적화 */
   #input-panel {
-    padding: 16px 12px 16px 12px;
-    gap: 8px;
+    padding: 12px !important;
+    gap: 8px !important;
   }
 
   #idea-input {
-    padding: 10px 14px;
-    font-size: 14px;
-    border-radius: 10px;
+    font-size: 14px !important;
   }
 
   #submit-btn {
-    padding: 10px 16px;
-    font-size: 14px;
-    border-radius: 10px;
+    white-space: nowrap !important;
+    padding: 10px 14px !important;
   }
 
+  /* 카드 보드 영역 */
   #board {
-    padding-bottom: 100px !important;
-    gap: 12px !important;
+    padding-bottom: 90px !important;
+    gap: 10px !important;
   }
 
   .idea-box {
-    box-sizing: border-box;
     width: 100% !important;
-    max-width: 100% !important;
+    box-sizing: border-box !important;
   }
 }
