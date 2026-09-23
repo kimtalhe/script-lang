@@ -1,45 +1,3 @@
-/* 📱 모바일 최적화 (스마트폰 반응형) */
-@media (max-width: 768px) {
-  /* 하단 입력 패널여백 및 위치 조정 */
-  #input-panel {
-    padding: 16px 12px 16px 12px;
-    gap: 8px;
-  }
-
-  /* 모바일용 입력 박스 */
-  #idea-input {
-    padding: 10px 14px;
-    font-size: 14px;
-    border-radius: 10px;
-  }
-
-  /* 등록 버튼 모바일 크기 최적화 */
-  #submit-btn {
-    padding: 10px 16px;
-    font-size: 14px;
-    border-radius: 10px;
-  }
-
-  /* 메인 보드 패널 하단 여백 확보 (입력창에 카드가 가려지지 않도록) */
-  #board {
-    padding-bottom: 100px !important;
-    gap: 10px !important;
-  }
-
-  /* 아이디어 카드 모바일 대응 */
-  .idea-box {
-    box-sizing: border-box;
-    width: 100% !important; /* 모바일에서는 너비를 카드 전체로 맞춤 */
-    max-width: 100% !important;
-  }
-
-  /* 모달 팝업 창 모바일 사이즈 */
-  .modal-content, #top3-modal-content {
-    width: 90% !important;
-    padding: 20px 16px !important;
-  }
-}
-
 * {
   box-sizing: border-box;
   margin: 0;
@@ -445,4 +403,73 @@ body {
   background: #ef4444;
   color: white;
   transform: scale(1.1);
+}
+
+/* 📱 모바일 최적화 (스마트폰 반응형) */
+@media (max-width: 768px) {
+
+  /* 상단 헤더 및 주제(Topic) 입력란 간격 재조정 */
+  .header-container, #topic-container {
+    padding-top: 60px !important; /* 🔥 TOP 3 버튼이 들어갈 충분한 위쪽 여백 확보 */
+    width: 100% !important;
+    box-sizing: border-box;
+  }
+
+  #topic-input {
+    width: calc(100% - 32px) !important; /* 화면을 넘치지 않도록 너비 자동 계산 */
+    font-size: 1.1rem !important;
+  }
+
+  /* 🔥 TOP 3 버튼 모바일 위치 및 크기 최적화 */
+  .top3-btn {
+    top: 12px !important;
+    right: 16px !important;
+    padding: 6px 12px !important;
+    font-size: 0.85rem !important;
+    z-index: 20 !important; /* 주제 입력란보다 위쪽에 뜨도록 레이어 설정 */
+  }
+
+  /* TOP 3 모달 팝업 모바일 크기 최적화 */
+  .top3-modal {
+    width: 90% !important;
+    max-width: none !important;
+    padding: 20px 16px !important;
+  }
+
+  .top3-item {
+    padding: 12px 14px !important;
+  }
+
+  .top3-text {
+    font-size: 0.9rem !important;
+  }
+
+  /* 하단 입력 패널 및 보드 레이아웃 유지 */
+  #input-panel {
+    padding: 16px 12px 16px 12px;
+    gap: 8px;
+  }
+
+  #idea-input {
+    padding: 10px 14px;
+    font-size: 14px;
+    border-radius: 10px;
+  }
+
+  #submit-btn {
+    padding: 10px 16px;
+    font-size: 14px;
+    border-radius: 10px;
+  }
+
+  #board {
+    padding-bottom: 100px !important;
+    gap: 12px !important;
+  }
+
+  .idea-box {
+    box-sizing: border-box;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
 }
