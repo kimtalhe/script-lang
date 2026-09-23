@@ -13,35 +13,71 @@ body {
   color: #1f2937;
 }
 
-/* 1. 상단 주제 영역 */
-#header {
+/* 1. 상단 헤더 및 주제 영역 (PC 기본) */
+#header, .header-container {
   background: #ffffff;
   padding: 16px 24px;
   border-bottom: 2px solid #e5e7eb;
   text-align: center;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
+#topic-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+}
+
+/* 💡 점선 테두리 완전히 제거 및 레이아웃 유지 */
 #topic-input {
   font-size: 22px;
   font-weight: 800;
-  border: none;
-  border-bottom: 2px dashed #6b7280;
+  border: 1px solid transparent !important; /* 투명 테두리로 레이아웃 틀어짐 방지 */
+  outline: none !important;                 /* 포커스 라인 제거 */
+  box-shadow: none !important;
   text-align: center;
   width: 80%;
   max-width: 600px;
-  padding: 4px;
-  outline: none;
+  padding: 6px 8px;
   color: #111827;
   background: transparent;
-  transition: border-color 0.2s;
+  transition: all 0.2s ease;
 }
 
 #topic-input:focus {
-  border-bottom-color: #2563eb;
+  border-color: transparent !important;
 }
 
-/* 텍 박 */
+/* 우측 상단 TOP 3 버튼 (PC 기본) */
+.top3-btn {
+  position: absolute;
+  top: 50%;
+  right: 24px;
+  transform: translateY(-50%);
+  padding: 10px 18px;
+  font-size: 0.95rem;
+  font-weight: bold;
+  color: #d97706;
+  background-color: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.top3-btn:hover {
+  background-color: #fef3c7;
+  transform: translateY(-50%) scale(1.02);
+}
+
+/* 2. 아이디어 보드 영역 */
 #board {
   flex: 1;
   padding: 30px;
@@ -53,7 +89,7 @@ body {
   align-content: flex-start;
 }
 
-/* 동적 텍 박 */
+/* 3. 아이디어 카드 */
 .idea-box {
   background: #ffffff;
   border: 2px solid #e5e7eb;
@@ -68,8 +104,8 @@ body {
   box-sizing: border-box;
   min-width: 240px;
   max-width: 100%; 
+  position: relative;
 }
-
 
 .idea-box:hover {
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
@@ -107,33 +143,59 @@ body {
   background: #dbeafe;
 }
 
-/* 4. 하단 입력 패널 (그라데이션 플로팅 스타일) */
+/* 개별 삭제 버튼 (✕) */
+.delete-card-btn {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: rgba(0, 0, 0, 0.06);
+  color: #6b7280;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: all 0.2s ease;
+}
+
+.idea-box:hover .delete-card-btn {
+  opacity: 1;
+}
+
+.delete-card-btn:hover {
+  background: #ef4444;
+  color: white;
+  transform: scale(1.1);
+}
+
+/* 4. 하단 입력 패널 (플로팅 글래스모피즘) */
 #input-panel {
   position: fixed;
   bottom: 0;
   left: 0;
   width: 100%;
-  padding: 36px 24px 20px 24px; /* 위쪽 여백을 넓혀 그라데이션이 자연스럽게 번지도록 설정 */
-  
-  /* 💡 하단 어두운 반투명 그라데이션 */
+  padding: 36px 24px 20px 24px;
   background: linear-gradient(
     to bottom,
-    rgba(0, 0, 0, 0) 0%,        /* 상단: 완전 투명 */
-    rgba(15, 23, 42, 0.45) 40%,  /* 중간: 은은한 딥 블루-블랙 */
-    rgba(15, 23, 42, 0.88) 100%  /* 하단: 짙은 다크 톤 */
+    rgba(0, 0, 0, 0) 0%,
+    rgba(15, 23, 42, 0.45) 40%,
+    rgba(15, 23, 42, 0.88) 100%
   );
-  
-  /* 뒤 배경 카드들이 흐릿하게 보이는 글래스모피즘 효과 */
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 12px;
   box-sizing: border-box;
   z-index: 100;
-  border-top: none; /* 기존 상단 경계선 제거 */
+  border-top: none;
 }
 
 #idea-input {
@@ -145,20 +207,14 @@ body {
   font-size: 15px;
   outline: none;
   resize: none;
-
-  /* 💡 불투명도 80% (0.8) 적용 */
   background-color: rgba(255, 255, 255, 0.8);
   color: #1f2937;
-  
-  /* 글래스모피즘 분위기를 살려주는 자체 블러 */
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
-
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
   transition: all 0.25s ease;
 }
 
-/* 입력할 때는 불투명도 100%로 선명해지며 또렷하게 보임 */
 #idea-input:focus {
   background-color: rgba(255, 255, 255, 1);
   border-color: #2563eb;
@@ -190,7 +246,7 @@ body {
   transform: translateY(0);
 }
 
-/* 5. 코멘트 모달 팝업 */
+/* 5. 코멘트 및 TOP 3 모달 팝업 */
 .modal-overlay {
   display: none;
   position: fixed;
@@ -202,15 +258,15 @@ body {
   justify-content: center;
   align-items: center;
   z-index: 1000;
-  backdrop-filter: blur(4px); /* 뒤 배경 은은하게 블러 처리 */
+  backdrop-filter: blur(4px);
 }
 
 .modal {
   background: white;
   border-radius: 24px;
-  width: 70vw;          /* 화면 너비의 70% */
-  max-width: 1000px;    /* 모니터가 너무 클 때 방지용 */
-  height: 70vh;         /* 화면 높이의 70% */
+  width: 70vw;
+  max-width: 1000px;
+  height: 70vh;
   padding: 36px;
   display: flex;
   flex-direction: column;
@@ -229,7 +285,7 @@ body {
 }
 
 .comment-list {
-  flex: 1;              /* 남은 세로 공간을 모달 내에서 최대로 차지 */
+  flex: 1;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -269,60 +325,6 @@ body {
   border-color: #2563eb;
 }
 
-/* --- 유튜브 스타일 좋아요 애니메이션 --- */
-
-/* 1. 버튼 연속 동작 (확대 -> 회전 -> 팝 효과) */
-@keyframes yt-like-pop {
-  0% { transform: scale(1); }
-  15% { transform: scale(0.8) rotate(-15deg); }
-  45% { transform: scale(1.2) rotate(10deg); }
-  75% { transform: scale(0.9) rotate(-3deg); }
-  100% { transform: scale(1) rotate(0deg); }
-}
-
-
-/* 3. 박스 전체가 들썩이는 연속 반응 (바운스) */
-@keyframes yt-box-bounce {
-  0% { transform: scale(1); }
-  30% { transform: scale(1.03) translateY(-4px); }
-  60% { transform: scale(0.98) translateY(2px); }
-  100% { transform: scale(1) translateY(0); }
-}
-
-/* 애니메이션 클래스 */
-.main-vote-btn.anim-active {
-  animation: yt-like-pop 0.55s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards !important;
-  position: relative;
-}
-
-.idea-box.anim-active {
-  animation: yt-box-bounce 0.45s ease-out forwards;
-}
-
-
-/* 우측 상단 TOP 3 버튼 */
-.top3-btn {
-  position: absolute;
-  top: 20px;
-  right: 24px;
-  padding: 10px 18px;
-  font-size: 0.95rem;
-  font-weight: bold;
-  color: #d97706;
-  background-color: #fffbeb;
-  border: 1px solid #fde68a;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  z-index: 10;
-}
-
-.top3-btn:hover {
-  background-color: #fef3c7;
-  transform: translateY(-1px);
-}
-
-/* TOP 3 모달 스타일 */
 .top3-modal {
   max-width: 500px;
   height: auto;
@@ -371,69 +373,58 @@ body {
   margin-left: 10px;
 }
 
-.idea-box {
+/* 6. 좋아요 애니메이션 */
+@keyframes yt-like-pop {
+  0% { transform: scale(1); }
+  15% { transform: scale(0.8) rotate(-15deg); }
+  45% { transform: scale(1.2) rotate(10deg); }
+  75% { transform: scale(0.9) rotate(-3deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+@keyframes yt-box-bounce {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.03) translateY(-4px); }
+  60% { transform: scale(0.98) translateY(2px); }
+  100% { transform: scale(1) translateY(0); }
+}
+
+.main-vote-btn.anim-active {
+  animation: yt-like-pop 0.55s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards !important;
   position: relative;
 }
 
-.delete-card-btn {
-  position: absolute;
-  top: 10px;
-  right: 12px;
-  width: 24px;
-  height: 24px;
-  border: none;
-  background: rgba(0, 0, 0, 0.06);
-  color: #6b7280;
-  border-radius: 50%;
-  font-size: 12px;
-  font-weight: bold;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  transition: all 0.2s ease;
+.idea-box.anim-active {
+  animation: yt-box-bounce 0.45s ease-out forwards;
 }
 
-.idea-box:hover .delete-card-btn {
-  opacity: 1;
-}
 
-.delete-card-btn:hover {
-  background: #ef4444;
-  color: white;
-  transform: scale(1.1);
-}
-
-/* 📱 모바일 전용 반응형 레이아웃 수정 */
+/* ==========================================
+   📱 모바일 전용 최적화 스타일 (768px 이하)
+   ========================================== */
 @media (max-width: 768px) {
-
-  /* 상단 헤더 컨테이너 정렬 */
-  .header-container {
-    display: flex !important;
-    flex-direction: column !important; /* 요소들을 세로로 정렬 */
-    align-items: center !important;
-    padding: 16px 12px 10px 12px !important;
-    gap: 10px !important;
+  #header, .header-container {
+    padding: 14px 12px !important;
     position: relative !important;
   }
 
-  /* 🔥 TOP 3 버튼을 우측 상단으로 이동 및 크기 축소 */
   .top3-btn {
-    position: absolute !important;
     top: 12px !important;
     right: 12px !important;
-    padding: 4px 10px !important;
+    transform: none !important;
+    padding: 5px 10px !important;
     font-size: 0.8rem !important;
-    z-index: 10 !important;
   }
 
-  /* 주제(Topic) 입력 영역 패딩 조정 및 오른쪽 여백 확보 */
+  .top3-btn:hover {
+    transform: none !important;
+  }
+
   #topic-container {
     width: 100% !important;
-    padding-right: 90px !important; /* 우측 TOP 3 버튼 영역과 안 겹치게 여백 지정 */
+    padding-right: 85px !important; /* 우측 TOP 3 버튼과 안 겹치게 여백 설정 */
     box-sizing: border-box !important;
-    margin-top: 5px !important;
+    justify-content: flex-start !important;
   }
 
   #topic-input {
@@ -442,29 +433,34 @@ body {
     text-align: left !important;
   }
 
-  /* 하단 입력창 모바일 너비 최적화 */
-  #input-panel {
-    padding: 12px !important;
-    gap: 8px !important;
-  }
-
-  #idea-input {
-    font-size: 14px !important;
-  }
-
-  #submit-btn {
-    white-space: nowrap !important;
-    padding: 10px 14px !important;
-  }
-
-  /* 카드 보드 영역 */
   #board {
-    padding-bottom: 90px !important;
-    gap: 10px !important;
+    padding: 16px 12px 100px 12px !important;
+    gap: 12px !important;
   }
 
   .idea-box {
     width: 100% !important;
     box-sizing: border-box !important;
+  }
+
+  #input-panel {
+    padding: 16px 12px 16px 12px !important;
+    gap: 8px !important;
+  }
+
+  #idea-input {
+    font-size: 14px !important;
+    padding: 10px 14px !important;
+  }
+
+  #submit-btn {
+    padding: 10px 16px !important;
+    font-size: 14px !important;
+  }
+
+  .modal {
+    width: 90vw !important;
+    height: 80vh !important;
+    padding: 20px !important;
   }
 }
