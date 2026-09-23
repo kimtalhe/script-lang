@@ -4,43 +4,38 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>실시간 브레인스토밍 보드</title>
-  <!-- 외부 스타일시트 연결 -->
-  <link rel="stylesheet" href="style.css">
-  <!-- 외부 자바스크립트 연결 (ES 모듈 방식) -->
-  <script type="module" src="main.js"></script>
+  <link rel="stylesheet" href="style.css?v=1.1">
+  <script type="module" src="main.js?v=1.1"></script>
 </head>
 <body>
 
-<!-- 변경 전: value="💡 주제를 입력하세요" -->
-<!-- 변경 후: -->
-<header id="header">
-    <!-- 우측 상단 TOP 3 버튼 -->
-<button type="button" id="top3-btn" class="top3-btn">
-  🔥 TOP 3
-</button>
-
-<!-- TOP 3 전용 모달 -->
-<div id="top3-modal-overlay" class="modal-overlay">
-  <div class="modal top3-modal">
-    <div class="modal-title">🔥 실시간 인기 아이디어 TOP 3</div>
-    <div id="top3-list" class="top3-list">
-      <!-- JS에서 인기 순위 3개가 여기에 들어갑니다 -->
+  <!--  헤더 영역 -->
+  <header id="header">
+    <div id="topic-container">
+      <input type="text" id="topic-input" placeholder="💡 주제를 입력하세요" />
     </div>
-  </div>
-</div>
-  <input type="text" id="topic-input" placeholder="💡 주제를 입력하세요" />
-</header>
-  <!-- 2. 중앙 아이디어 보드 -->
+    <button type="button" id="top3-btn" class="top3-btn"> TOP 3</button>
+  </header>
+
+  <!--  중앙 텍 박 -->
   <main id="board"></main>
 
-  <!-- 3. 하단 작성 패널 -->
+  <!-- 입력란 -->
   <footer id="input-panel">
-    <textarea id="idea-input" rows="1" placeholder="새 아이디어 작성... (Enter로 제출)"></textarea>
+    <textarea id="idea-input" rows="1" placeholder="새 아이디어 작성... (Enter로 제출)" aria-label="새 아이디어 작성"></textarea>
     <button id="submit-btn">등록</button>
   </footer>
 
-  <!-- 4. 더블클릭 코멘트 모달 -->
-  <div class="modal-overlay" id="modal-overlay">
+  <!-- 4. TOP 3 팝업 -->
+  <div id="top3-modal-overlay" class="modal-overlay">
+    <div class="modal top3-modal">
+      <div class="modal-title"> 실시간 인기 아이디어 TOP 3</div>
+      <div id="top3-list" class="top3-list"></div>
+    </div>
+  </div>
+
+  <!-- 코멘트 팝업 -->
+  <div id="modal-overlay" class="modal-overlay">
     <div class="modal">
       <div class="modal-title" id="modal-idea-text"></div>
       <div class="comment-list" id="comment-list"></div>
