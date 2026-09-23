@@ -1,7 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getDatabase, ref, push, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-// --- Firebase 설정 ---
+// --- Firebase  ---
 const firebaseConfig = {
   databaseURL: "https://script01-d56c4-default-rtdb.firebaseio.com"
 };
@@ -11,8 +11,7 @@ const db = getDatabase(app);
 const ideasRef = ref(db, 'ideas');
 const topicRef = ref(db, 'topic');
 
-// --- 상태 관리 ---
-// 사용자 클라이언트 ID (투표 중복 방지)
+// --- 인지체크(재투포 불가) ---
 let clientId = localStorage.getItem('brainstorm_client_id');
 if (!clientId) {
   clientId = 'user_' + Math.random().toString(36).substring(2, 9);
@@ -21,7 +20,6 @@ if (!clientId) {
 
 let ideasData = {};
 let currentModalIdeaId = null;
-let animatingIdeaId = null;
 
 // --- DOM 요소 ---
 const board = document.getElementById('board');
@@ -31,19 +29,16 @@ const submitBtn = document.getElementById('submit-btn');
 const modalOverlay = document.getElementById('modal-overlay');
 const commentInput = document.getElementById('comment-input');
 const commentSubmitBtn = document.getElementById('comment-submit-btn');
-const resetAllBtn = document.getElementById('reset-all-btn');
 
-// --- TOP 3 모달 관련 요소 ---
+// TOP 3 모달 관련
 const top3Btn = document.getElementById('top3-btn');
 const top3ModalOverlay = document.getElementById('top3-modal-overlay');
 const top3List = document.getElementById('top3-list');
 
-// --- 🎨 파스텔톤 색상 생성 함수 ---
+// --- 🎨 파스텔톤 색상 생성 ---
 function getRandomPastelColor() {
   const hue = Math.floor(Math.random() * 360);
-  const saturation = 70 + Math.floor(Math.random() * 20);
-  const lightness = 85 + Math.floor(Math.random() * 10);
-  return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+  return `hsl(${hue}, 75%, 90%)`;
 }
 
 // --- 실시간 데이터 감지 (Firebase Listeners) ---
@@ -95,28 +90,7 @@ if (modalOverlay) {
   });
 }
 
-// 🗑️ 전체 초기화 버튼 이벤트 (단일 onclick 바인딩으로 중복 차단)
-if (resetAllBtn) {
-  resetAllBtn.onclick = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    const confirmReset = confirm('등록된 모든 아이디어와 코멘트를 삭제하시겠습니까?\n이 작업은 복구할 수 없습니다.');
-
-    if (confirmReset) {
-      remove(ref(db, 'ideas'))
-        .then(() => {
-          alert('모든 아이디어가 초기화되었습니다.');
-        })
-        .catch((error) => {
-          console.error("초기화 실패:", error);
-          alert('초기화 중 오류가 발생했습니다.');
-        });
-    }
-  };
-}
-
-// 🔥 TOP 3 버튼 클릭 및 모달 이벤트
+// 🔥 TOP 3 모달 이벤트
 if (top3Btn) {
   top3Btn.addEventListener('click', () => {
     renderTop3();
@@ -138,27 +112,19 @@ function createIdea() {
   const text = ideaInput.value.trim();
   if (!text) return;
 
-  const randomBgColor = getRandomPastelColor();
-
   push(ideasRef, {
     text: text,
-    bgColor: randomBgColor,
+    bgColor: getRandomPastelColor(),
     voters: {},
     comments: []
   });
   ideaInput.value = '';
 }
 
-// 🗑️ 개별 아이디어 카드 삭제 (Firebase DB 연동)
 function deleteIdea(id, event) {
-  event.stopPropagation(); // 모달 팝업 등 부모 이벤트 전달 방지
-
+  event.stopPropagation();
   if (confirm('이 아이디어를 삭제하시겠습니까?')) {
-    remove(ref(db, `ideas/${id}`))
-      .catch((error) => {
-        console.error("삭제 실패:", error);
-        alert('삭제 처리 중 오류가 발생했습니다.');
-      });
+    remove(ref(db, `ideas/${id}`)).catch((err) => console.error("삭제 실패:", err));
   }
 }
 
@@ -167,29 +133,20 @@ function voteIdea(id, event) {
   const idea = ideasData[id];
   if (!idea) return;
 
-  animatingIdeaId = id;
-
   const voters = idea.voters || {};
   if (voters[clientId]) {
     delete voters[clientId];
     update(ref(db, `ideas/${id}`), { voters: voters });
   } else {
-    voters[clientId] = true;
     update(ref(db, `ideas/${id}/voters`), { [clientId]: true });
   }
-
-  // 애니메이션 종료 후 상태 초기화
-  setTimeout(() => {
-    if (animatingIdeaId === id) {
-      animatingIdeaId = null;
-      renderBoard();
-    }
-  }, 350);
 }
 
 function renderBoard() {
   if (!board) return;
   board.innerHTML = '';
+
+  const isMobile = window.innerWidth <= 768;
 
   Object.keys(ideasData).forEach(id => {
     const idea = ideasData[id];
@@ -199,61 +156,38 @@ function renderBoard() {
     const comments = idea.comments ? Object.values(idea.comments) : [];
     const bgColor = idea.bgColor || 'hsl(260, 85%, 92%)';
 
-    const isAnimating = (animatingIdeaId === id);
-
     const box = document.createElement('div');
-    box.className = `idea-box ${isAnimating ? 'anim-active' : ''}`;
+    box.className = 'idea-box';
 
-    // 📱 모바일 화면(폭 768px 이하) 여부 체크
-    const isMobile = window.innerWidth <= 768;
-
-    // 모바일이면 100% 비율 기반, PC면 좋아요 수에 따른 가변 계산 유지
-    const baseWidth = isMobile 
-      ? Math.min(window.innerWidth - 32, 600) 
-      : Math.min(240 + voteCount * 25, 600);
-
-    const flexGrow = isMobile ? 0 : (1 + (voteCount * 0.5));
-    const minHeight = isMobile ? 100 : Math.min(130 + voteCount * 15, 350);
-    const fontSize = isMobile 
-      ? Math.min(14 + voteCount * 0.8, 20) 
-      : Math.min(15 + voteCount * 1.5, 32);
-    const padding = isMobile ? 16 : Math.min(18 + voteCount * 2, 42);
-
-    box.style.width = isMobile ? '100%' : `${baseWidth}px`;
-    box.style.flexGrow = flexGrow;
-    box.style.minHeight = `${minHeight}px`;
-    box.style.fontSize = `${fontSize}px`;
-    box.style.padding = `${padding}px`;
+    if (isMobile) {
+      box.style.width = '100%';
+      box.style.minHeight = '100px';
+      box.style.fontSize = `${Math.min(14 + voteCount * 0.8, 20)}px`;
+      box.style.padding = '16px';
+    } else {
+      box.style.width = `${Math.min(240 + voteCount * 25, 600)}px`;
+      box.style.flexGrow = 1 + (voteCount * 0.5);
+      box.style.minHeight = `${Math.min(130 + voteCount * 15, 350)}px`;
+      box.style.fontSize = `${Math.min(15 + voteCount * 1.5, 32)}px`;
+      box.style.padding = `${Math.min(18 + voteCount * 2, 42)}px`;
+    }
     box.style.backgroundColor = bgColor;
 
-    // 카드 내부 구조 (삭제 버튼 + 아이디어 텍스트 + 하단 코멘트/좋아요)
     box.innerHTML = `
       <button class="delete-card-btn" title="삭제">✕</button>
-      <div class="idea-text" style="word-break: break-word;">${idea.text}</div>
+      <div class="idea-text">${idea.text}</div>
       <div class="idea-footer" style="margin-top: 16px;">
         <span>💬 코멘트 ${comments.length}</span>
-        <div style="display:flex; gap:6px; align-items:center;">
-          <button class="vote-btn main-vote-btn ${isVoted ? 'voted' : ''} ${isAnimating ? 'anim-active' : ''}">
-            👍 ${voteCount}
-          </button>
-        </div>
+        <button class="vote-btn main-vote-btn ${isVoted ? 'voted' : ''}">
+          👍 ${voteCount}
+        </button>
       </div>
     `;
 
-    // 삭제 버튼 이벤트 연결
-    const deleteBtn = box.querySelector('.delete-card-btn');
-    if (deleteBtn) {
-      deleteBtn.addEventListener('click', (e) => deleteIdea(id, e));
-    }
-
-    // 좋아요 버튼 이벤트 연결
-    const voteBtn = box.querySelector('.main-vote-btn');
-    if (voteBtn) {
-      voteBtn.addEventListener('click', (e) => voteIdea(id, e));
-    }
-
-    // 더블클릭 시 코멘트 모달 열기
+    box.querySelector('.delete-card-btn')?.addEventListener('click', (e) => deleteIdea(id, e));
+    box.querySelector('.main-vote-btn')?.addEventListener('click', (e) => voteIdea(id, e));
     box.addEventListener('dblclick', () => openModal(id));
+
     board.appendChild(box);
   });
 }
@@ -274,8 +208,7 @@ function addComment() {
   const text = commentInput.value.trim();
   if (!text || !currentModalIdeaId) return;
 
-  const commentRef = ref(db, `ideas/${currentModalIdeaId}/comments`);
-  push(commentRef, text);
+  push(ref(db, `ideas/${currentModalIdeaId}/comments`), text);
   commentInput.value = '';
 }
 
@@ -298,7 +231,6 @@ function renderComments(idea) {
   }
 }
 
-// 🔥 TOP 3 아이디어 정렬 및 렌더링 함수
 function renderTop3() {
   if (!top3List) return;
   top3List.innerHTML = '';
@@ -315,7 +247,6 @@ function renderTop3() {
   });
 
   ideasArray.sort((a, b) => b.voteCount - a.voteCount);
-
   const top3 = ideasArray.slice(0, 3);
 
   if (top3.length === 0 || top3[0].voteCount === 0) {
