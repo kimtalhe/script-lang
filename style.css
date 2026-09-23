@@ -34,13 +34,12 @@ body {
   width: 100%;
 }
 
-/* 💡 점선 테두리 완전히 제거 및 레이아웃 유지 */
 #topic-input {
   font-size: 22px;
   font-weight: 800;
-  border: 1px solid transparent !important; /* 투명 테두리로 레이아웃 틀어짐 방지 */
-  outline: none !important;                 /* 포커스 라인 제거 */
-  box-shadow: none !important;
+  border: 1px solid transparent;
+  outline: none;
+  box-shadow: none;
   text-align: center;
   width: 80%;
   max-width: 600px;
@@ -50,11 +49,7 @@ body {
   transition: all 0.2s ease;
 }
 
-#topic-input:focus {
-  border-color: transparent !important;
-}
-
-/* 우측 상단 TOP 3 버튼 (PC 기본) */
+/* 우측 상단 TOP 3 버튼 */
 .top3-btn {
   position: absolute;
   top: 50%;
@@ -101,7 +96,6 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  box-sizing: border-box;
   min-width: 240px;
   max-width: 100%; 
   position: relative;
@@ -143,7 +137,7 @@ body {
   background: #dbeafe;
 }
 
-/* 개별 삭제 버튼 (✕) */
+/* 개별 카드 삭제 버튼 (✕) */
 .delete-card-btn {
   position: absolute;
   top: 10px;
@@ -193,9 +187,7 @@ body {
   justify-content: center;
   align-items: center;
   gap: 12px;
-  box-sizing: border-box;
   z-index: 100;
-  border-top: none;
 }
 
 #idea-input {
@@ -272,7 +264,6 @@ body {
   flex-direction: column;
   gap: 20px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-  box-sizing: border-box;
 }
 
 .modal-title {
@@ -390,77 +381,76 @@ body {
 }
 
 .main-vote-btn.anim-active {
-  animation: yt-like-pop 0.55s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards !important;
-  position: relative;
+  animation: yt-like-pop 0.55s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
 
 .idea-box.anim-active {
   animation: yt-box-bounce 0.45s ease-out forwards;
 }
 
-
 /* ==========================================
    📱 모바일 전용 최적화 스타일 (768px 이하)
    ========================================== */
 @media (max-width: 768px) {
   #header, .header-container {
-    padding: 14px 12px !important;
-    position: relative !important;
+    padding: 14px 12px;
   }
 
   .top3-btn {
-    top: 12px !important;
-    right: 12px !important;
-    transform: none !important;
-    padding: 5px 10px !important;
-    font-size: 0.8rem !important;
+    top: 12px;
+    right: 12px;
+    transform: none;
+    padding: 6px 12px;
+    font-size: 0.8rem;
   }
 
   .top3-btn:hover {
-    transform: none !important;
+    transform: none;
   }
 
   #topic-container {
-    width: 100% !important;
-    padding-right: 85px !important; /* 우측 TOP 3 버튼과 안 겹치게 여백 설정 */
-    box-sizing: border-box !important;
-    justify-content: flex-start !important;
+    padding-right: 80px;
+    justify-content: flex-start;
   }
 
   #topic-input {
-    width: 100% !important;
-    font-size: 1.1rem !important;
-    text-align: left !important;
+    width: 100%;
+    font-size: 1.1rem;
+    text-align: left;
   }
 
   #board {
-    padding: 16px 12px 100px 12px !important;
-    gap: 12px !important;
+    padding: 16px 12px 100px 12px;
+    gap: 12px;
   }
 
   .idea-box {
-    width: 100% !important;
-    box-sizing: border-box !important;
+    width: 100%;
+  }
+
+  /* 모바일 터치 환경에서는 삭제 버튼 상시 노출 */
+  .delete-card-btn {
+    opacity: 0.6;
   }
 
   #input-panel {
-    padding: 16px 12px 16px 12px !important;
-    gap: 8px !important;
+    padding: 16px 12px;
+    gap: 8px;
   }
 
   #idea-input {
-    font-size: 14px !important;
-    padding: 10px 14px !important;
+    font-size: 14px;
+    padding: 10px 14px;
   }
 
   #submit-btn {
-    padding: 10px 16px !important;
-    font-size: 14px !important;
+    padding: 10px 16px;
+    font-size: 14px;
   }
 
   .modal {
-    width: 90vw !important;
-    height: 80vh !important;
-    padding: 20px !important;
+    width: 90vw;
+    height: 80vh;
+    padding: 20px;
   }
 }
